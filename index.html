@@ -1,137 +1,70 @@
 <!DOCTYPE html>
 <html>
+<style>
+    table, th, td {
+      width: 80%;
+      border: 1px solid rgb(136, 136, 136);
+      border-collapse: collapse;
+      text-align: center;
+      height: 30px;
+      vertical-align: middle;
+    }
+  </style>
     <head>
-      <title>HASS-assignment1 WangXin</title> 
-      <meta name="author" content="WangXin">
+        <title> Overall and regional PSI data</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="mystyle.css">
     </head> 
-    <body style="background-color: rgb(17, 18, 19);" >
-        <p style="text-align: center; color: aliceblue; font-size:large;">Last updated:April 8, 2016</p> 
-        <div style="text-align: center;">
-   <table border="1" style="margin: auto;">
-       <tr style="color: darkkhaki;">
-           <th>Metric</th>
-           <th>West</th>
-           <th>National</th>
-           <th>East</th>
-           <th>Central</th>
-           <th>South</th>
-           <th>North</th>
-       </tr>
 
-       <tr style="color: rgb(100, 100, 98);">
-           <td>o3_sub_index</td>
-           <td>12</td>
-           <td>18</td>
-           <td>13</td>
-           <td>18</td>
-           <td>9</td>
-           <td>16</td>
-       </tr>
-
-        <tr style="color: rgb(100, 100, 98);">
-           <td>pm10_twenty_four_hourly</td>
-           <td>19</td>
-           <td>31</td>
-           <td>20</td>
-           <td>31</td>
-           <td>29</td>
-           <td>23</td>
-       </tr>
-
-       <tr style="color: rgb(100, 100, 98);">
-           <td>pm10_sub_index</td>
-           <td>19</td>
-           <td>31</td>
-           <td>20</td>
-           <td>31</td>
-           <td>29</td>
-           <td>23</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>co_sub_index</td>
-           <td>7</td>
-           <td>7</td>
-           <td>5</td>
-           <td>3</td>
-           <td>3</td>
-           <td>5</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>pm25_twenty_four_hourly</td>
-           <td>6</td>
-           <td>9</td>
-           <td>7</td>
-           <td>9</td>
-           <td>7</td>
-           <td>9</td>
-       </tr>
-           
-       <tr style="color: rgb(100, 100, 98);">
-           <td>so2_sub_index</td>
-           <td>3</td>
-           <td>3</td>
-           <td>2</td>
-           <td>1</td>
-           <td>1</td>
-           <td>1</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>co_eight_hour_max</td>
-           <td>0.72</td>
-           <td>0.72</td>
-           <td>0.53</td>
-           <td>0.29</td>
-           <td>0.32</td>
-           <td>0.47</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>no2_one_hour_max</td>
-           <td>10</td>
-           <td>16</td>
-           <td>7</td>
-           <td>16</td>
-           <td>6</td>
-           <td>7</td>
-       </tr>
-        <tr style="color: rgb(100, 100, 98);">
-           <td>so2_twenty_four_hourly</td>
-           <td>5</td>
-           <td>5</td>
-           <td>3</td>
-           <td>2</td>
-           <td>2</td>
-           <td>2</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>pm25_sub_index</td>
-           <td>24</td>
-           <td>38</td>
-           <td>30</td>
-           <td>38</td>
-           <td>30</td>
-           <td>38</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>psi_twenty_four_hourly</td>
-           <td>24</td>
-           <td>38</td>
-           <td>30</td>
-           <td>38</td>
-           <td>30</td>
-           <td>38</td>
-       </tr>
-       <tr style="color: rgb(100, 100, 98);">
-           <td>o3_eight_hour_max</td>
-           <td>29</td>
-           <td>42</td>
-           <td>31</td>
-           <td>42</td>
-           <td>21</td>
-           <td>38</td>
-       </tr>
-   </table>
-</div>
-    </body>
-
-    </body>
-</html>
+    <body style="background-color: rgb(17, 18, 19);">
+        <h2 style="text-align: center; background-color: rgb(201, 192, 192);">Singapore PSI Table</h2>
+        <h4 id="timestamp" style="text-align: center; color: aqua;"></h4>
+        
+        <div style="text-align: center; color: antiquewhite;">
+            <table id="PSI_table" align="center">
+            <tbody>
+            <tr>
+                <th>Metric</th>
+                <th>National</th>
+                <th>Central</th>
+                <th>West</th>
+                <th>East</th>
+                <th>North</th>
+                <th>South</th>
+            </tr>
+            </tbody>
+        
+            </table>
+        </div>
+        
+        <script>
+            fetch("https://api.data.gov.sg/v1/environment/psi")
+                .then(response => response.json())
+                .then(data => {
+                    let timestamp = data.items[0].update_timestamp;
+                    var readings = data.items[0].readings;
+        
+                    $('#timestamp').text(timestamp);
+        
+                    var table = document.getElementById("PSI_table");
+        
+        
+                    for (var metric in readings){
+                        var row = table.insertRow(table.rows.length);
+                        var c1 = row.insertCell(0);
+                        c1.innerHTML=metric;
+                        cnames = ['national', 'central', 'west', 'east', 'north', 'south']
+                        for (var i=0;i<cnames.length;i++){
+                            var c = row.insertCell(i+1);
+                            c.innerHTML=readings[metric][cnames[i]]
+                        }
+                    }
+                });
+        
+        
+        </script>
+        
+        </body>
+      
+ </html>
+      
